@@ -6,6 +6,7 @@ public class Board {
     private char[][] hidden;
     private boolean[][] revealed;
     private boolean[][] flag; // added feature
+    private boolean firstMove = true;
 
     //loop 8 directions
     private final int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
@@ -21,12 +22,17 @@ public class Board {
         revealed = new boolean[rows][cols];
         flag = new boolean[rows][cols];
         initBoard();
-        placeBomb();
-        calculateNumbers();
     }
     //getter
     public int getRows() { return rows; }
     public int getCols() { return cols; }
+    public char[][] getVisible() {
+        return visible;
+    }
+
+    public boolean[][] getFlag() {
+        return flag;
+    }
 
     private void initBoard() {
         for (int i = 0; i < rows; i++) {
@@ -38,7 +44,25 @@ public class Board {
             }
         }
     }
+    private void placeBombAvoid(int safeR, int safeC) {
 
+        Random rand = new Random();
+        int count = 0;
+
+        while (count < mines) {
+
+            int r = rand.nextInt(rows);
+            int c = rand.nextInt(cols);
+
+            // avoid first square
+            if ((r == safeR && c == safeC) || hidden[r][c] == '*') {
+                continue;
+            }
+
+            hidden[r][c] = '*';
+            count++;
+        }
+    }
     private void placeBomb() {
         Random rand = new Random();
         int count = 0;
@@ -72,7 +96,14 @@ public class Board {
     }
     //DFS method to show if not mine
     public boolean reveal(int r, int c) {
+        if (firstMove) {
 
+            placeBombAvoid(r, c);
+
+            calculateNumbers();
+
+            firstMove = false;
+        }
         if (!inBounds(r, c)) return true;
 
 
@@ -125,6 +156,17 @@ public class Board {
         if (!inBounds(r, c) || revealed[r][c]) return;
 
         flag[r][c] = !flag[r][c];
+    }
+    public void revealAllBombs() {
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+
+                if (hidden[i][j] == '*') {
+                    visible[i][j] = '*';
+                }
+            }
+        }
     }
     public boolean checkWin() {
         int safeCells = rows * cols - mines;

@@ -1,31 +1,34 @@
-import java.util.Scanner;
+import javax.swing.*;
 
 public class Main {
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
 
-        System.out.println("Choose difficulty:");
-        System.out.println("1. Easy (5x5, 5 bombs)");
-        System.out.println("2. Medium (8x8, 10 bombs)");
-        System.out.println("3. Hard (10x10, 20 bombs)");
+        String[] options = {"Easy", "Medium", "Hard"};
 
-        int choice = sc.nextInt();
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Choose difficulty",
+                "Minesweeper",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
 
-        Game game;
-
-        if (choice == 1) {
-            game = new Game(5, 5, 5);
-        } else if (choice == 2) {
-            game = new Game(8, 8, 10);
-        } else if(choice == 3){
-            game = new Game(10, 10, 20);
+        if (choice == 0) {
+            new GUI(5, 5, 5);
         }
-        else {
-            System.out.println("Invalid Difficulty");
+        else if (choice == 1) {
+            new GUI(8, 8, 10);
+        }
+        else if (choice == 2) {
+            new GUI(10, 10, 20);
+        }
+        else if (choice == 3) {
+            System.out.println("Invalid difficulty");
             return;
         }
-
-
-        game.start();
     }
 }

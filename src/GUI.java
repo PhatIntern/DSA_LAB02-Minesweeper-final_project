@@ -6,11 +6,12 @@ public class GUI extends JFrame {
 
     private Board board;
     private JButton[][] buttons;
-    private int rows, cols;
+    private int rows, cols, mines;
 
     public GUI(int rows, int cols, int mines) {
         this.rows = rows;
         this.cols = cols;
+        this.mines = mines;
 
         board = new Board(rows, cols, mines);
 
@@ -52,10 +53,14 @@ public class GUI extends JFrame {
                         disableAllButtons();
 
                         JOptionPane.showMessageDialog(this, "Game Over!");
+                        // if click restart
+                        restartGame();
                     }
 
                     if (board.checkWin()) {
                         JOptionPane.showMessageDialog(this, "You Win!");
+                        // if click restart
+                        restartGame();
                     }
                 });
 
@@ -135,6 +140,25 @@ public class GUI extends JFrame {
 
                 buttons[i][j].setEnabled(false);
             }
+        }
+    }
+    private void restartGame() {
+
+        int option = JOptionPane.showConfirmDialog(
+                this,
+                "Play Again?",
+                "Restart",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (option == JOptionPane.YES_OPTION) {
+
+            dispose();
+
+            new GUI(rows, cols, mines);
+        }
+        else {
+            System.exit(0);
         }
     }
 }
